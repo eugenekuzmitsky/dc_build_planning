@@ -1,0 +1,138 @@
+project reno1 "Homelab building Phase 1" 2025-01-18 +2m {
+  currency "USD"
+  timeformat "%Y-%m-%d"
+  numberformat "-" "" "," "." 1
+  currencyformat "(" ")" "," "." 0
+  weekstartsmonday
+  ## workinghours mon - fri 11:00 - 12:30, 13:30 - 16:00
+   workinghours sat, sun off
+}
+
+#######  accounts #########
+
+######## resources #########
+
+
+########## tasks ##########
+task projectstart "Project Start" {
+  start ${projectstart}
+}
+
+
+#task basement "Fixing the basement" {
+#  task research "Research the problem" {
+#    length 3h
+#  }
+#  task buymaterials "Buy Materials" {
+#    length 3h
+#    depends !research
+#  }
+#  task covertheceiling "Cover basement's ceiling" {
+#    length 3h
+#    depends !buymaterials
+#  }
+#  task cleanup "Clean the basement area" {
+#    length 4h
+#    depends !covertheceiling
+#  }
+#}
+#
+task second_floor_network "Run cables on second floor" {
+  start ${projectstart}
+  task procurement_networking "Plan in details and do all purchases" {
+    length 1d
+  }
+  task testing_and_cabling "Test the walls and run the cables" {
+    depends !procurement_networking
+    length 3d
+  }
+  task cover_and_finish "Finish the cabling phase" {
+    depends !testing_and_cabling
+    length 1d
+  }
+}
+
+
+task studio_room "Finish Studio Room" {
+  depends second_floor_network
+  task preptheroom "Prep the room" {
+    task movethethings "Move all stuff" {
+      length 4h
+    }
+    task covertheroom "Cover the room with plastic and covers" {
+      depends !movethethings
+      length 4h
+    }
+    task patchandclean "Patch and grind walls and ceiling" {
+      depends !covertheroom
+      length 1d
+    }
+  }
+  task paint_the_room "Paint and finish" {
+    depends !preptheroom
+    task paint1 "Paint ceiling and prime wallls" {
+      length 1d
+    }
+    task paint2 "Paint walls" {
+      depends !paint1
+      length 1d
+    }
+    task painttrims "Paint baseboard" {
+      depends !paint2
+      length 1d
+    }
+  }
+}
+
+task reinstall_music_studio "Reinstall all synth racks and cabling in Music Studio" {
+  depends !studio_room
+  task setup_synth_wall "Reinstall all synthesizers on the rack and connect audio" {
+    duration 2d
+  }
+  task setup_midi "Setup all MIDI connectivity" {
+    depends !setup_synth_wall
+    duration 1d
+  }
+  task setup_tape_machines "Setup tape machines and test recording" {
+    depends !setup_midi
+    length 2d
+  }
+}
+
+task datacenter "Establish datacenter with connectivity" {
+  depends studio_room
+  task cleanbasement "Cleanup and move the stuff" {
+    task move "Move the stuff" { length 2d }
+    task cleanup "Clean the area" {  depends !move length 1d }
+  }
+  task installcomputers "Refine and install computers" {
+    depends !cleanbasement
+    task redoall "Enumerate, reinstall, and create inventory of all the PCs" {
+      length 5d
+    }
+    task add_circuits "Measure the power consumption and install additional circuit breakers" {
+      depends !redoall
+      length 2d
+    }
+  }
+  task networkbasement "Install network in basement" {
+    depends !cleanbasement
+    task install_equipment "Install switches and cables" {
+      length 1d
+    }
+    task connectandfailover "Switch to new network and setup failover" { depends !install_equipment length 1d }
+    task test_failover "Test the failover scenario" { depends !connectandfailover length 1d }
+  }
+  task start_experimenting "Start creating first clusters with K8N etc" {
+    depends !networkbasement
+    length 1m
+  }
+
+}
+
+taskreport "reports/reno_v1" {
+  formats html, csv
+  headline "Project Breakdown"
+  columns bsi, name, start, end, chart {scale day}
+}
+

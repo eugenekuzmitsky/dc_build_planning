@@ -1,4 +1,4 @@
-project reno1 "Homelab building Phase 1" 2025-01-18 +2m {
+project homelab_phase1 "Homelab building Phase 1" 2025-01-18 +2m {
   currency "USD"
   timeformat "%Y-%m-%d"
   numberformat "-" "" "," "." 1
@@ -53,7 +53,7 @@ task second_floor_network "Run cables on second floor" {
 }
 
 
-task studio_room "Finish Studio Room" {
+task studio_room "Finish Work_Studio Room" {
   depends second_floor_network
   task preptheroom "Prep the room" {
     task movethethings "Move all stuff" {
@@ -130,8 +130,8 @@ task datacenter "Establish datacenter with connectivity" {
 
 }
 
-taskreport "reports/reno_v1" {
-  formats html, csv
+taskreport "reports/homelab1" {
+  formats html
   headline "Project Breakdown"
   columns bsi, name, start, end, chart {scale day}
 }
